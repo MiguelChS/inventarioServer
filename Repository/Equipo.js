@@ -151,7 +151,7 @@ EquipoRepository.prototype.getXFS = function () {
 
 EquipoRepository.prototype.getModulosEquipo = function () {
     return new Promise((resolve,reject) =>{
-        new this.DB().executeQuery(`SELECT id as value, modulo as label, tipo_equipo as idTipo from modulos`)
+        new this.DB().executeQuery(`SELECT id as value, modulo as label, tipo_equipo as idTipo, 0 as selected, 1 as show from modulos`)
             .then((result)=>{
                 let resultAgrupado = {};
                 for(let i = 0; i < result.length ; i++){
