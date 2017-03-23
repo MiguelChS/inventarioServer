@@ -3,6 +3,8 @@
  */
 
 let repoEquipo = require("../Repository/Equipo");
+let repoPosition = require("../Repository/Position");
+let repoSite = require("../Repository/Site");
 
 function Equipo(){
     return {
@@ -18,8 +20,11 @@ function Equipo(){
                 queries.push(repoEquipo.getXFS());
                 queries.push(repoEquipo.getEstado());
                 queries.push(repoEquipo.getListModelo());
-                queries.push(repoEquipo.getTipoequipo());
+                queries.push(repoEquipo.getTipoEquipo());
                 queries.push(repoEquipo.getModulosEquipo());
+                queries.push(repoEquipo.getEquipos());
+                queries.push(repoPosition.getPosition());
+                queries.push(repoSite.getSite());
                 Promise.all(queries).then((value)=>{
                     var result = {};
                     value.map((a)=>{
@@ -32,6 +37,14 @@ function Equipo(){
                     reject(err);
                 })
             })
+        },
+        'InsertEquipo':(data)=>{
+            //verificar cual de todos los equipos tiene asignado posicion
+
+            //verificar si esas posicion tiene un equipo asignado
+
+            //en caso de tenerlo darlo de baja y asignarlo a una posicion deposito
+
         }
 
     }

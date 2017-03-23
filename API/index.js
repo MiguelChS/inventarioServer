@@ -14,6 +14,9 @@ function Api(Router) {
                 res.status(400).json({err:err});
             });
     });
+    Router.post("",(req,res)=>{
+
+    });
 
     return Router;
 }

@@ -19,11 +19,33 @@ EquipoRepository.prototype.getlistMarca = function () {
     });
 };
 
-EquipoRepository.prototype.getTipoequipo = function () {
+EquipoRepository.prototype.getEquipos = function () {
     return new Promise((resolve,reject)=>{
-        new this.DB().executeQuery(`select id as value, tipo_equipo as label from tipo_eq`)
+        new this.DB().executeQuery(`select id as value, tipo_equipo as label from tipo_equipo where id <> 2`)
             .then((result)=>{
-                resolve({tipoEquipo:result})
+                resolve({Equipos:result})
+            })
+            .catch((err)=>{
+                reject(err)
+            })
+    });
+};
+
+EquipoRepository.prototype.getTipoEquipo = function () {
+    return new Promise((resolve,reject)=>{
+        new this.DB().executeQuery(`select id as value, tipo_equipo as label,id_tipo_equipo as idEquipo from tipo_eq`)
+            .then((result)=>{
+                let resultAgrupado = {};
+                for(let i = 0; i < result.length ; i++){
+                    let obj = result[i];
+                    if(resultAgrupado.hasOwnProperty(obj.idEquipo)){
+                        resultAgrupado[obj.idEquipo].push(obj);
+                    }else{
+                        let attr = obj.idEquipo ? obj.idEquipo : "generico";
+                        resultAgrupado[attr] = [obj];
+                    }
+                }
+                resolve({tipoEquipo:resultAgrupado})
             })
             .catch((err)=>{
                 reject(err)
@@ -169,5 +191,6 @@ EquipoRepository.prototype.getModulosEquipo = function () {
             })
     })
 };
+
 
 module.exports = new EquipoRepository();
