@@ -2,9 +2,10 @@
  * Created by mc185249 on 2/16/2017.
  */
 let Equipo = require("../Services/InventarioEquipo");
+let Posicion = require("../Services/InventarioPosicion");
 
 function Api(Router) {
-    Router.get("/sourceIvenEquipo",(req,res)=>{
+    Router.get("/sourceInventario",(req,res)=>{
         Equipo().getSource()
             .then((result)=>{
                 res.status(200).json(result);
@@ -14,10 +15,6 @@ function Api(Router) {
                 res.status(400).json({err:err});
             });
     });
-    Router.post("",(req,res)=>{
-
-    });
-
     return Router;
 }
 
