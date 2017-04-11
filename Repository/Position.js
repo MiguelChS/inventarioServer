@@ -148,4 +148,17 @@ PositionRepository.prototype.getUbicacionSite = function () {
     })
 };
 
+PositionRepository.prototype.getTypeHora = function () {
+    return new Promise((resolve,reject) =>{
+        new this.DB().executeQuery(`SELECT id as value,nombre as label FROM ventana_horaria`)
+            .then((result)=>{
+                resolve({TypeHora:result})
+            })
+            .catch((err)=>{
+                reject(err)
+            })
+    })
+};
+
+
 module.exports = new PositionRepository();

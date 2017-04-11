@@ -34,6 +34,7 @@ function Equipo(){
                 queries.push(repoPosition.getFLM());
                 queries.push(repoPosition.getPrestacion());
                 queries.push(repoPosition.getUbicacionSite());
+                queries.push(repoPosition.getTypeHora());
                 Promise.all(queries).then((value)=>{
                     var result = {};
                     value.map((a)=>{
