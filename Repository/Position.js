@@ -7,20 +7,11 @@ class PositionRepository{
     }
 }
 
-PositionRepository.prototype.getPosition = function () {
+PositionRepository.prototype.getPositionByIdSiteClient = function (idSiteClient) {
     return new Promise((resolve,reject) =>{
-        new this.DB().executeQuery(`SELECT id as value,cliente_id as label,id_site as idSite,1 as flag from inv_posicion where f_baja is NULL `)
+        new this.DB().executeQuery(`SELECT id as value,cliente_id as label,id_site_cliente as idSiteClient,1 as flag from inv_posicion where id_site_cliente=${idSiteClient} and f_baja is NULL `)
             .then((result)=>{
-                let resultAgrupado = {};
-                for(let i = 0; i < result.length ; i++){
-                    let obj = result[i];
-                    if(resultAgrupado.hasOwnProperty(obj.idSite)){
-                        resultAgrupado[obj.idSite].push(obj);
-                    }else{
-                        resultAgrupado[obj.idSite] = [obj];
-                    }
-                }
-                resolve({position:resultAgrupado});
+                resolve({position:result});
             })
             .catch((err)=>{
                 reject(err);

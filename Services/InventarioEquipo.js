@@ -11,6 +11,7 @@ function Equipo(){
         'getSource':()=>{
             return new Promise((resolve,reject)=>{
                 let queries = [];
+                queries.push(repoEquipo.getEquipos());
                 queries.push(repoEquipo.getlistMarca());
                 queries.push(repoEquipo.getPlanta());
                 queries.push(repoEquipo.getCarga());
@@ -21,9 +22,6 @@ function Equipo(){
                 queries.push(repoEquipo.getListModelo());
                 queries.push(repoEquipo.getTipoEquipo());
                 queries.push(repoEquipo.getModulosEquipo());
-                queries.push(repoEquipo.getEquipos());
-                queries.push(repoPosition.getPosition());
-                queries.push(repoSite.getSite());
                 queries.push(repoPosition.getGavetas());
                 queries.push(repoPosition.getTablaStatus());
                 queries.push(repoPosition.getCommandScript());
@@ -35,6 +33,11 @@ function Equipo(){
                 queries.push(repoPosition.getPrestacion());
                 queries.push(repoPosition.getUbicacionSite());
                 queries.push(repoPosition.getTypeHora());
+                queries.push(repoSite.getTipoSite());
+                queries.push(repoSite.getGeoClient());
+                queries.push(repoSite.getPais());
+                queries.push(repoSite.getGeoNcr());
+                queries.push(repoSite.getTipoDirecion());
                 Promise.all(queries).then((value)=>{
                     var result = {};
                     value.map((a)=>{
@@ -48,13 +51,47 @@ function Equipo(){
                 })
             })
         },
-        'InsertEquipo':(data)=>{
-            //verificar cual de todos los equipos tiene asignado posicion
-
-            //verificar si esas posicion tiene un equipo asignado
-
-            //en caso de tenerlo darlo de baja y asignarlo a una posicion deposito
-
+        'getSiteByidClient':(idClient,origen)=>{
+            return new Promise((resolve,reject)=>{
+                if(origen == 2){
+                    repoSite.getSiteByInstitucion(idClient)
+                        .then((result)=>{
+                            resolve(result);
+                        })
+                        .catch((err)=>{
+                            reject(err);
+                        })
+                }else{
+                    repoSite.getSiteByidClientD1(idClient)
+                        .then((result)=>{
+                            resolve(result);
+                        })
+                        .catch((err)=>{
+                            reject(err);
+                        })
+                }
+            });
+        },
+        'getSiteClientByIdSite':(idSite)=>{
+            return repoSite.getSiteClienteIdSite(idSite)
+        },
+        'getPosicionByIdSiteClient':(idSiteClient)=>{
+            return repoPosition.getPositionByIdSiteClient(idSiteClient);
+        },
+        'getEquipoByIdSiteClient':(idSiteClient)=>{
+            return repoEquipo.getEquipoByIdSiteClient(idSiteClient);
+        },
+        'getPrestacionEquipo':(idEquipo)=>{
+            return repoEquipo.getPrestacionByIdEquipo(idEquipo);
+        },
+        'getEstado':(pais)=>{
+            return repoSite.getEstado(pais);
+        },
+        'getCiudad':(pais,estado)=>{
+            return repoSite.getCiudad(pais,estado);
+        },
+        'getCodigoPostal':(pais,estado,ciudad)=>{
+            return repoSite.getCodigoPostal(pais,estado,ciudad);
         }
 
     }
