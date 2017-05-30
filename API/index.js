@@ -4,14 +4,12 @@
 let Equipo = require("../Services/InventarioEquipo");
 let Posicion = require("../Services/InventarioPosicion");
 let login = require("../Services/loginService");
+let Site = require("../Services/inventarioSite");
 let fs = require("fs");
 
 function Api(Router) {
 
     Router.get("/sourceInventario",(req,res)=>{
-        /*fs.readFile("source.json",'utf8',(err,data)=>{
-            res.status(200).json(JSON.parse(data));
-        });*/
         Equipo().getSource()
             .then((result)=>{
                 res.status(200).json(result);
@@ -22,8 +20,8 @@ function Api(Router) {
             });
     });
 
-    Router.get('/site/:idClient/:origen',(req,res)=>{
-        Equipo().getSiteByidClient(req.params.idClient,req.params.origen)
+    Router.get('/site/:idClient',(req,res)=>{
+        Equipo().getSiteByidClient(req.params.idClient)
             .then((result)=>{
                 res.status(200).json(result);
             })
@@ -44,8 +42,8 @@ function Api(Router) {
             });
     });
 
-    Router.get('/posicion/:idSiteClient',(req,res)=>{
-        Equipo().getPosicionByIdSiteClient(req.params.idSiteClient)
+    Router.get('/posicion/:idSite',(req,res)=>{
+        Equipo().getPosicionByIdSite(req.params.idSite)
             .then((result)=>{
                 res.status(200).json(result);
             })
@@ -140,6 +138,50 @@ function Api(Router) {
             .catch((err)=>{
                 let mjsErr = "hay un problema en el servidor intente mas tarde";
                 res.status(400).json({err:mjsErr});
+            });
+    });
+
+    Router.post("/Equipo",(req,res)=>{
+        Equipo().newEquipo(req.body,req.headers.authorization)
+            .then((result)=>{
+                res.status(200).json({});
+            })
+            .catch((err)=>{
+                err = err.response ? err.response.data : err.message;
+                res.status(400).json({err:err});
+            });
+    });
+
+    Router.post("/Posicion",(req,res)=>{
+        Posicion().newPosicion(req.body,req.headers.authorization)
+            .then((result)=>{
+                res.status(200).json({});
+            })
+            .catch((err)=>{
+                err = err.response ? err.response.data : err.message;
+                res.status(400).json({err:err});
+            });
+    });
+
+    Router.post("/Site",(req,res)=>{
+        Site().newSite(req.body,req.headers.authorization)
+            .then((result)=>{
+                res.status(200).json({});
+            })
+            .catch((err)=>{
+                err = err.response ? err.response.data : err.message;
+                res.status(400).json({err:err});
+            });
+    });
+
+    Router.get("/getSitePublic/:idTipoLugar",(req,res)=>{
+        Site().getSitePublicByTipoLugar(req.params.idTipoLugar)
+            .then((result)=>{
+                res.status(200).json(result);
+            })
+            .catch((err)=>{
+                err = err.hasOwnProperty("message") ? err.message : err;
+                res.status(400).json({err:err});
             });
     });
 

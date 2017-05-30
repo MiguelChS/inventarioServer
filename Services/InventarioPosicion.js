@@ -1,6 +1,7 @@
 /**
  * Created by mc185249 on 4/5/2017.
  */
+let jwt = require('jsonwebtoken');
 let repoPosition = require("../Repository/Position");
 
 function Posicion(){
@@ -30,6 +31,11 @@ function Posicion(){
                     reject(err);
                 })
             })
+        },
+
+        'newPosicion':(form,token)=>{
+            form.id_user = jwt.decode(token).idUser;
+            return repoPosition.insertPosition(form)
         }
     }
 }

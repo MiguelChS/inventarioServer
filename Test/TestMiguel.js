@@ -4,9 +4,9 @@
 let login = require("../Repository/Login");
 
 function Test() {
-    login.verificar()
+    login.verificar('WebInventario','1234')
         .then((result)=>{
-            console.log(result)
+            console.log(result);
         })
         .catch((err)=>{
             console.log(err);

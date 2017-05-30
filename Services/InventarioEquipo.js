@@ -2,9 +2,11 @@
  * Created by mc185249 on 3/3/2017.
  */
 
+let jwt = require('jsonwebtoken');
 let repoEquipo = require("../Repository/Equipo");
 let repoPosition = require("../Repository/Position");
 let repoSite = require("../Repository/Site");
+
 
 function Equipo(){
     return {
@@ -51,32 +53,14 @@ function Equipo(){
                 })
             })
         },
-        'getSiteByidClient':(idClient,origen)=>{
-            return new Promise((resolve,reject)=>{
-                if(origen == 2){
-                    repoSite.getSiteByInstitucion(idClient)
-                        .then((result)=>{
-                            resolve(result);
-                        })
-                        .catch((err)=>{
-                            reject(err);
-                        })
-                }else{
-                    repoSite.getSiteByidClientD1(idClient)
-                        .then((result)=>{
-                            resolve(result);
-                        })
-                        .catch((err)=>{
-                            reject(err);
-                        })
-                }
-            });
+        'getSiteByidClient':(idClient)=>{
+            return repoSite.getSiteByidClientD1(idClient);
         },
         'getSiteClientByIdSite':(idSite)=>{
             return repoSite.getSiteClienteIdSite(idSite)
         },
-        'getPosicionByIdSiteClient':(idSiteClient)=>{
-            return repoPosition.getPositionByIdSiteClient(idSiteClient);
+        'getPosicionByIdSite':(idSite)=>{
+            return repoPosition.getPosicionByIdSite(idSite);
         },
         'getEquipoByIdSiteClient':(idSiteClient)=>{
             return repoEquipo.getEquipoByIdSiteClient(idSiteClient);
@@ -92,6 +76,40 @@ function Equipo(){
         },
         'getCodigoPostal':(pais,estado,ciudad)=>{
             return repoSite.getCodigoPostal(pais,estado,ciudad);
+        },
+        'newEquipo':(form,token)=>{
+            let idUser = jwt.decode(token).idUser;
+            if(form.newPosicion){
+                return new Promise((resolve,reject)=>{
+                    let formPosicion = form.newPosicion;
+                    //le insertamos las prestaciones y el idUsuario
+                    formPosicion.HoraPrestacion = form.horaPrestacion;
+                    formPosicion.iduser = idUser;
+                    //1 insertamos primero la posicion
+                    repoPosition.insertPosition(formPosicion)
+                        .then((result)=>{
+                            //2 obtenemos el id de la nueva posicion
+                            form.id_user = idUser;
+                            form.id_posicion = result.data;
+                            //insertamos el nuevo equipo con la posicion
+                            repoEquipo.insertEquipo(form)
+                                .then(()=>{ resolve()})
+                                .catch((err)=>{
+                                    //en caso de fallar elminar la posicion creada
+                                   //repoPosition.deletePosicion(0);
+                                    reject(err);
+                                })
+                        })
+                        .catch((err)=>{
+                            reject(err);
+                        });
+                });
+            }else{
+                //eliminamos la New Posicion y enviamos
+                form.id_user = idUser;
+                delete form.newPosicion;
+                return repoEquipo.insertEquipo(form);
+            }
         }
 
     }

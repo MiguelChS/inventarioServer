@@ -8,6 +8,7 @@
   "license": "ISC",
   "dependencies": {
     "assert": "^1.4.1",
+    "axios": "^0.16.1",
     "body-parser": "^1.16.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",

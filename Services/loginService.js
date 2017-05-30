@@ -14,11 +14,11 @@ function Login(){
                         }else{
                             resolve({
                                 nombre:result.nombre,
-                                institucion:result.institucion,
+                                cliente:result.cliente,
                                 token:jwt.sign({
                                     idUser:result.idUser,
                                     nombre:result.nombre,
-                                    institucion:result.institucion,
+                                    cliente:result.cliente,
                                     exp: Math.floor(Date.now() / 1000) + (60 * 60)}
                                     , 'secretKey')
                             })
@@ -36,6 +36,9 @@ function Login(){
                     if(err){
                         resolve(false);
                     }else{
+                        delete decoded.exp;
+                        delete decoded.iat;
+                        delete decoded.idUser;
                         resolve(decoded)
                     }
                 });

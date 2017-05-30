@@ -1,22 +1,28 @@
 /**
  * Created by mc185249 on 3/16/2017.
  */
+let  axios = require("axios");
+
 class PositionRepository{
     constructor(){
         this.DB = require("../DB/SqlServer");
     }
 }
+PositionRepository.prototype.insertPosition = function (formulario) {
+    return axios.post('http://153.72.43.146:3001/',formulario);
+};
 
-PositionRepository.prototype.getPositionByIdSiteClient = function (idSiteClient) {
-    return new Promise((resolve,reject) =>{
-        new this.DB().executeQuery(`SELECT id as value,cliente_id as label,id_site_cliente as idSiteClient,1 as flag from inv_posicion where id_site_cliente=${idSiteClient} and f_baja is NULL `)
-            .then((result)=>{
-                resolve({position:result});
-            })
-            .catch((err)=>{
-                reject(err);
-            })
-    })
+PositionRepository.prototype.deletePosicion = function (idPosicion) {
+    return axios(
+        {
+            method: 'DELETE',
+            url: 'http://lnxsrv01:3001/position',
+            data: idPosicion
+        });
+};
+
+PositionRepository.prototype.getPosicionByIdSite = function (idSite) {
+    return new this.DB().executeQuery(`SELECT id as value,cliente_id as label from inv_posicion where id_site=${idSite}`)
 };
 
 PositionRepository.prototype.getGavetas = function () {

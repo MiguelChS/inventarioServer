@@ -1,11 +1,17 @@
 /**
  * Created by mc185249 on 3/3/2017.
  */
+let axios = require("axios");
+
 class EquipoRepository{
     constructor(){
         this.DB = require("../DB/SqlServer");
     }
 }
+
+EquipoRepository.prototype.insertEquipo = function (formulario) {
+    return axios.post('http://153.72.43.146:3000/',formulario)
+};
 
 EquipoRepository.prototype.getEquipoByIdSiteClient = function (idSiteClient) {
     return new this.DB().executeQuery(`SELECT DISTINCT e.id as value, e.id_equipo_ncr as label
