@@ -152,6 +152,17 @@ function Api(Router) {
             });
     });
 
+    Router.get("/EquipoDelete/:idEquipo",(req,res)=>{
+        Equipo().DeleteEquipo(req.params.idEquipo)
+            .then((result)=>{
+                res.status(200).json({});
+            })
+            .catch((err)=>{
+                err = err.response ? err.response.data : err.message;
+                res.status(400).json({err:err});
+            });
+    })
+
     Router.post("/Posicion",(req,res)=>{
         Posicion().newPosicion(req.body,req.headers.authorization)
             .then((result)=>{
@@ -181,6 +192,28 @@ function Api(Router) {
             })
             .catch((err)=>{
                 err = err.hasOwnProperty("message") ? err.message : err;
+                res.status(400).json({err:err});
+            });
+    });
+
+    Router.get("/Equipo/:idTipoEq/:idClient/:idInstitucion/:idSite/:Pais/:serie",(req,res)=>{
+        Equipo().getEquipos(req.params)
+            .then((result)=>{
+                res.status(200).json(result);
+            })
+            .catch((err)=>{
+                err = err.response ? err.response.data : err.message;
+                res.status(400).json({err:err});
+            });
+    });
+
+    Router.get("/EquipoById/:idEquipo",(req,res)=>{
+        Equipo().getEquipoById(req.params.idEquipo)
+            .then((result)=>{
+                res.status(200).json(result);
+            })
+            .catch((err)=>{
+                err = err.response ? err.response.data : err.message;
                 res.status(400).json({err:err});
             });
     });

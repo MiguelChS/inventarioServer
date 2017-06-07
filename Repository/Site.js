@@ -9,7 +9,7 @@ class SiteRepository{
     }
 }
 SiteRepository.prototype.insertSiteClient = function (formulario) {
-    return axios.post('http://153.72.43.146:3003/',formulario);
+    return axios.post('http://lnxsrv02:3003/',formulario);
 };
 
 

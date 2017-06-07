@@ -10,8 +10,107 @@ class EquipoRepository{
 }
 
 EquipoRepository.prototype.insertEquipo = function (formulario) {
-    return axios.post('http://153.72.43.146:3000/',formulario)
+    return axios.post('http://lnxsrv02:3000/',formulario)
 };
+
+EquipoRepository.prototype.Delete = function (id) {
+    return axios.delete(`http://lnxsrv02:3000/${id}`)
+};
+
+
+EquipoRepository.prototype.getbyFiltros = function (idEquipo,idClient,idInstitucion,idSite,Pais,serie) {
+    let parametros = {
+        Pais:{
+            Value:Pais,
+            Type:"VarChar"
+        },
+        idCliente:{
+            Value:idClient,
+            Type:"VarChar"
+        },
+        idInstitucion:{
+            Value:idInstitucion,
+            Type:"VarChar"
+        },
+        idTipoEquipo:{
+            Value:idEquipo,
+            Type:"VarChar"
+        },
+        idSite:{
+            Value:idSite,
+            Type:"VarChar"
+        },
+        serie:{
+            Value:serie,
+            Type:"VarChar"
+        }
+    }
+    return new this.DB().procedure('sp_Busco_Equipos',parametros)
+};
+
+EquipoRepository.prototype.getByIdEquipo = function(id){
+    let parametros = {
+        idEquipo : {
+            Value:id,
+            Type:"Int"
+        }
+    }
+    return new Promise((resolve,reject)=>{
+        new this.DB().procedure('sp_Buscar_Equipo_byId',parametros)
+            .then(result => {
+                let equipo = {
+                    planta:null,
+                    serie:null,
+                    modelo:null,
+                    carga:null,
+                    snmp:null,
+                    so:null,
+                    xfs:null,
+                    f_garantia:null,
+                    f_instalacion:null,
+                    f_retiro:null,
+                    f_entrega:null,
+                    institucion:null,
+                    cliente:null,
+                    estado:null,
+                    tipoEquipo:null,
+                    tipoEq:null,
+                    marca:null,
+                    modulos:[]
+                };
+                result.forEach((item,index) => {
+                    if(index == 0){
+                        equipo.planta = item.id_planta;
+                        equipo.serie = item.nro_serie;
+                        equipo.modelo = item.id_modelo;
+                        equipo.carga = item.id_carga;
+                        equipo.snmp = item.id_snmp;
+                        equipo.so = item.id_SO;
+                        equipo.xfs = item.id_xfs;
+                        equipo.f_garantia = item.f_fin_garantia;
+                        equipo.f_instalacion = item.f_inst;
+                        equipo.f_retiro = item.f_retiro;
+                        equipo.f_entrega = item.f_entrega;
+                        equipo.institucion = item.id_institucion;
+                        equipo.cliente = item.Id_cliente;
+                        equipo.estado = item.id_estado;
+                        equipo.tipoEq = item.id_tipo_eq;
+                        equipo.tipoEquipo = item.id_tipo_equipo;
+                        equipo.marca = item.id_marca;
+                        equipo.modulos = item.id_modulo ? [item.id_modulo] : [];
+                    }else{
+                        if(item.id_modulo){
+                            equipo.modulos.push(item.id_modulo);
+                        }
+                    }
+                });
+                resolve(result.length ? equipo : null)
+            })
+            .catch(err=>{
+                reject(err)
+            })
+    })
+}
 
 EquipoRepository.prototype.getEquipoByIdSiteClient = function (idSiteClient) {
     return new this.DB().executeQuery(`SELECT DISTINCT e.id as value, e.id_equipo_ncr as label

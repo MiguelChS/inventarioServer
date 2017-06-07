@@ -8,8 +8,92 @@ class PositionRepository{
         this.DB = require("../DB/SqlServer");
     }
 }
+
 PositionRepository.prototype.insertPosition = function (formulario) {
-    return axios.post('http://153.72.43.146:3001/',formulario);
+    /*let parametros = {
+        cliente_id:{
+            Value:formulario.clientid,
+            Type:"VarChar"
+        },
+        ncr_id:{
+            Value:formulario.ncrid,
+            Type:"VarChar"
+        },
+        id_site:{
+            Value:formulario.idSite,
+            Type:"Int"
+        },
+        id_config_gavetas:{
+            Value:formulario.idconfiggavetas,
+            Type:"Int"
+        },
+        id_tabla_status:{
+            Value:formulario.id_status,
+            Type:"Int"
+        },
+        id_script:{
+            Value:formulario.idscript,
+            Type:"Int"
+        },
+        id_command:{
+            Value:formulario.idcommand,
+            Type:"Int"
+        },
+        id_usuario:{
+            Value:formulario.iduser,
+            Type:"Int"
+        },
+        id_community_string:{
+            Value:formulario.idcommunitystring,
+            Type:"Int"
+        },
+        ip:{
+            Value:formulario.ip,
+            Type:"VarChar"
+        },
+        dato2:{
+            Value:formulario.dato2,
+            Type:"VarChar"
+        },
+        dato3:{
+            Value:formulario.dato3,
+            Type:"VarChar"
+        },
+        id_comunicacion:{
+            Value:formulario.idcomunicacion,
+            Type:"Int"
+        },
+        id_slm:{
+            Value:formulario.idslm,
+            Type:"Int"
+        },
+        id_flm:{
+            Value:formulario.idflm,
+            Type:"Int"
+        },
+        f_inicio:{
+            Value:'2017-02-01',
+            Type:"Date"
+        },
+        f_fin:{
+            Value:'2017-02-01',
+            Type:"Date"
+        },
+        f_lastupdate:{
+            Value:'2017-02-01',
+            Type:"Date"
+        },
+        id_ubicacion_en_site:{
+            Value:formulario.idubicacionensite,
+            Type:"Int"
+        },
+        horas_separados_por_coma:{
+            Value:'',
+            Type:"Text"
+        }
+    }
+    return new this.DB().procedure('sp_Insert_Inv_Posicion',parametros)*/
+    return axios.post('http://lnxsrv02:3001/',formulario)
 };
 
 PositionRepository.prototype.deletePosicion = function (idPosicion) {

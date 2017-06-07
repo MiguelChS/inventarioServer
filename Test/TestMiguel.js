@@ -1,10 +1,10 @@
 /**
  * Created by mc185249 on 5/15/2017.
  */
-let login = require("../Repository/Login");
+let login = require("../Repository/Equipo");
 
 function Test() {
-    login.verificar('WebInventario','1234')
+    login.getByIdEquipo(3)
         .then((result)=>{
             console.log(result);
         })

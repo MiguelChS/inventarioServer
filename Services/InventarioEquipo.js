@@ -110,6 +110,21 @@ function Equipo(){
                 delete form.newPosicion;
                 return repoEquipo.insertEquipo(form);
             }
+        },
+        'getEquipos':(parametros)=>{
+            let idEquipo = parametros.idTipoEq == "null" ? null : parametros.idTipoEq;
+            let idClient = parametros.idClient == "null" ? null : parametros.idClient;
+            let idSite = parametros.idSite == "null" ? null : parametros.idSite;
+            let idInstitucion = parametros.idInstitucion == "null" ? null : parametros.idInstitucion;
+            let Pais = parametros.Pais == "null" ? null : parametros.Pais;
+            let serie = parametros.serie == "null" ? null : parametros.serie;
+            return repoEquipo.getbyFiltros(idEquipo,idClient,idInstitucion,idSite,Pais,serie)
+        },
+        'getEquipoById':(idEquipo)=>{
+            return repoEquipo.getByIdEquipo(idEquipo);
+        },
+        'DeleteEquipo':(id)=>{
+            return repoEquipo.Delete(id)
         }
 
     }

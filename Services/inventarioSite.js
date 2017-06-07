@@ -7,7 +7,7 @@ let repoSite = require("../Repository/Site");
 function Posicion(){
     return {
         'newSite':(form,token)=>{
-            form.id_user = jwt.decode(token).idUser;
+            form.idUsuario = jwt.decode(token).idUser;
             return repoSite.insertSiteClient(form)
         },
         'getSitePublicByTipoLugar':(idLugar)=>{
