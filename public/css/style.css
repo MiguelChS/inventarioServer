@@ -1,0 +1,281 @@
+.wrapper-content{
+    padding: 0px 20px 40px;
+}
+body{
+    background-color: #f3f3f4;
+}
+.wrapperWhite{
+    background-color: white;
+}
+
+.litleHeader{
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 2px 0 0;
+    color: inherit;
+    margin-bottom: 0;
+    padding: 5px 15px 5px;
+   /* min-height: 48px;*/
+}
+
+.litleHeader h5{
+    font-weight: 600;
+}
+
+.litleBody{
+    color: inherit;
+    padding: 15px 15px 0 15px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 0;
+}
+.form-control{
+    border-radius: 0 !important;
+}
+.form-control[disabled]{
+    cursor: pointer;
+}
+
+.hr-line-dashed{
+    border-top: 1px dashed #cccccc;
+    color: #ffffff;
+    background-color: #ffffff;
+    height: 1px;
+    margin: 20px 0;
+}
+.btn-white {
+    color: inherit;
+    background: white;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(221, 221, 221);
+    border-image: initial;
+}
+.btn-white:hover {
+    border-color: rgb(189, 188, 188);
+}
+.btn-white:focus{
+    outline: none !important;
+    border-color: rgb(189, 188, 188);
+}
+
+.TableMiddle > tbody > tr > td{
+    vertical-align: middle;
+}
+.react-datepicker {
+    font-size: 1.3rem !important;
+}
+
+.react-datepicker__current-month {
+    font-size: 1.5rem !important;
+}
+
+.react-datepicker__header {
+    padding-top: 6px !important;
+}
+
+.react-datepicker__navigation {
+    top: 13px !important;
+}
+
+.react-datepicker__day-name, .react-datepicker__day {
+    margin: 0.5rem !important;
+}
+
+.boxConten{
+    padding: 10px 20px 10px 20px;
+    border-top: 1px solid #e7eaec;
+    border-bottom: 1px solid #e7eaec;
+    margin-bottom: 10px;
+}
+
+.btn-boxList{
+    width: 100%;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+.selectBoxlist{
+    height:160px !important;
+    border:1px solid #dddddd;
+    border-top:none
+}
+
+.selectBoxlist:focus{
+    box-shadow: none !important;
+    border-color: #dddddd !important;
+}
+
+.input-group-addon{
+    background-color: #fff;
+    border: 1px solid #cccccc;
+    border-radius: 1px;
+    color: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    padding: 6px 12px;
+    text-align: center;
+    border-right: 0;
+}
+
+.require-inv{
+    border-color: #ed5565 !important;
+}
+.require-inv:focus{
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px #ed5565 !important;
+}
+
+.sinBordeModal > .modal-content{
+    border-radius: 0 !important;
+}
+
+.AutoCompleteResult > div:hover {
+    background-color: #e7eaec;
+}
+
+.AutoCompleteResult > div:focus {
+    background-color: #e7eaec;
+}
+
+.modal-body {
+    padding: 20px 30px 30px 30px;
+}
+
+.separarButton {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.titleModal {
+    margin-top: 0;
+    margin-bottom: -6px;
+}
+
+@media (min-width: 1300px){
+    .modal-xl {
+        width: 1250px;
+    }
+}
+
+@media (min-width: 1500px){
+    .modal-xl {
+        width: 1450px;
+    }
+}
+
+.formCompotAl > div > div {
+    min-height: 68px;
+}
+
+.boxFilterPrestacion{
+    height: 200px;
+    border: 1px solid #e7eaec;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 10px;
+}
+
+.boxFilterPrestacion .btnBoxFilter{
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.boxFilterPrestacion .hoverItem:hover{
+    background-color: #e7eaec;
+}
+
+.noselect{
+    user-select: none;
+}
+.paintCursor{
+    cursor: url("../image/cursorPaint.cur") 15 15,auto;
+}
+.mjsErr{
+    color: #ed5565;
+}
+body{
+    background-image: url(http://seantheme.com/color-admin-v2.2/admin/html/assets/img/login-bg/bg-5.jpg);
+    background-size: 100%;
+    background-repeat:no-repeat;
+}
+.login .brand{
+    font-size: 28px;
+    color: white;
+    font-weight: 100;
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+.login .icon{
+    font-size: 70px;
+    opacity: .4;
+    color: #ccc;
+    position: absolute;
+    top: -20px;
+    right: 40px;
+}
+.login small {
+    font-size: 14px;
+    color: rgba(255,255,255,.5);
+    display: block;
+}
+.login-content{
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-radius: 4px;
+}
+
+.login-content input {
+    background: rgba(0,0,0,.4);
+    border: none;
+    color: #fff;
+    font-size: 12px;
+}
+.login .loginHeader{
+    margin-top: 105px;
+}
+
+.login-content input:focus{
+
+}
+.login button{
+    border-color: #008a8a !important;
+    background: #008a8a none;
+}
+
+.login button:active{
+    background: #008a8a !important;
+    border-color: #008a8a !important;
+}
+.login button:hover{
+    background: #008a8a !important;
+    border-color: #008a8a !important;
+}
+.login button:focus{
+    background: #008a8a !important;
+    border-color: #008a8a !important;
+    outline: 0 !important;
+}
+
+.login .logo{
+    border: 14px solid transparent;
+    border-color: #4DCACA #31A3A3 #1D8888;
+    width: 28px;
+    height: 28px;
+    position: relative;
+    font-size: 0;
+    margin-right: 10px;
+    top: -9px;
+}
+
+.login .btn-success[disabled]{
+    background-color: #008a8a;
+}
+
+.mjsSuccess {
+    color: #008a8a;
+}
+.no-margins{
+    margin: 0 !important;
+}

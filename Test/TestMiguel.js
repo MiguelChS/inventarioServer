@@ -1,16 +1,23 @@
 /**
  * Created by mc185249 on 5/15/2017.
  */
-let login = require("../Repository/Equipo");
+let lib = require('../lib');
+lib();
+let repo = require("../Repository/Login");
+let service = require("../Services/loginService");
+let jwt = require('jsonwebtoken');
+
+
+/*let usuario = data.user;
+                let pass = data.pass; */
 
 function Test() {
-    login.getByIdEquipo(3)
-        .then((result)=>{
-            console.log(result);
+    service.Vefericar({ user: 'admin', pass: '1234' })
+        .then((result) => {
+            console.log(result)
         })
-        .catch((err)=>{
+        .catch((err) => {
             console.log(err);
         })
 }
-
 Test();

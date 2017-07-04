@@ -4,15 +4,21 @@
 let jwt = require('jsonwebtoken');
 let repoSite = require("../Repository/Site");
 
-function Posicion(){
+function Posicion() {
     return {
-        'newSite':(form,token)=>{
+        'newSite': (form, token) => {
             form.idUsuario = jwt.decode(token).idUser;
             return repoSite.insertSiteClient(form)
         },
-        'getSitePublicByTipoLugar':(idLugar)=>{
+        'getSitePublicByTipoLugar': (idLugar) => {
             return repoSite.getSiteByLugar(idLugar)
-        }
+        },
+        'getSiteByidClient': (idClient) => {
+            return repoSite.getSiteByidClientD1(idClient);
+        },
+        'getSiteClientByIdSite': (idSite) => {
+            return repoSite.getSiteClienteIdSite(idSite)
+        },
     }
 }
 

@@ -1,0 +1,85 @@
+.DateGrafic{
+	border: 1px solid #cccccc;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.DateGrafic .btnControl{
+	color: #c4c4c4;
+ }
+.DateGrafic .btnControl:hover{
+	color: #3c3c3c;
+}
+.DateGrafic .btnActive{
+	color: #3c3c3c;
+}
+
+.DateGrafic .textInline{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 14px;
+}
+
+.DateGrafic .cuboHoraHead{
+	width: 4.1%;
+	height: 25px;
+	display: inline-block;
+	border-left: 1px solid #c3bdbd;
+	border-bottom: 1px solid #c3bdbd;
+}
+
+.DateGrafic .hr-line-dashed{
+	margin: 10px 0;
+}
+
+.DateGrafic .horaHeadText{
+	height: 25px;
+	border-bottom: 1px solid #c3bdbd;
+}
+
+.DateGrafic .cuboHoraBody{
+	width: 50%;
+	height:100%;
+	display: inline-block;
+}
+
+.DateGrafic .borderLeft{
+	border-left: 1px solid #c3bdbd;
+}
+
+@media (min-width: 768px){
+	.horaHeadText{
+		margin-right: -30px;
+	}
+}
+
+.DateGrafic .btnPlus{
+	display: inline-block;
+	font-size: 10px;
+	margin-left: 6px;
+	margin-right: 6px;
+	cursor: pointer;
+}
+
+.DateGrafic .textDia{
+	display: inline-block;
+	margin: 0;
+	vertical-align: middle;
+}
+
+.DateGrafic .heigth25{
+	height: 25px;
+}
+
+.DateGrafic .txtDiaMargin{
+	margin-left: 21px;
+}
+
+.DateGrafic .BodyResultBorder {
+	border-bottom: 1px dashed #cccccc;
+}
+.DateGrafic .BodyResult > div {
+	display: inline-block;
+	margin-left: 10px;
+}

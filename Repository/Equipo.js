@@ -2,84 +2,92 @@
  * Created by mc185249 on 3/3/2017.
  */
 let axios = require("axios");
+let moment = require("moment");
 
-class EquipoRepository{
-    constructor(){
-        this.DB = require("../DB/SqlServer");
+class EquipoRepository {
+    constructor() {
+        this.DB = require("./DB/SqlServer");
     }
 }
 
-EquipoRepository.prototype.insertEquipo = function (formulario) {
-    return axios.post('http://lnxsrv02:3000/',formulario)
+EquipoRepository.prototype.insertEquipo = function(formulario) {
+    //lnxsrv02
+    //153.72.43.133
+    return axios.post('http://lnxsrv02:3000/', formulario)
 };
 
-EquipoRepository.prototype.Delete = function (id) {
-    return axios.delete(`http://lnxsrv02:3000/${id}`)
+EquipoRepository.prototype.UpdateEquipo = function(formulario) {
+    return axios.patch(`http://lnxsrv02:3000/${formulario.idEquipo}`, formulario)
 };
 
+EquipoRepository.prototype.Delete = function(id, idUser) {
+    return axios.delete(`http://lnxsrv02:3000/${idUser}/${id}`)
+};
 
-EquipoRepository.prototype.getbyFiltros = function (idEquipo,idClient,idInstitucion,idSite,Pais,serie) {
+EquipoRepository.prototype.getbyFiltros = function(idEquipo, idClient, idInstitucion, idSite, Pais, serie) {
     let parametros = {
-        Pais:{
-            Value:Pais,
-            Type:"VarChar"
+        Pais: {
+            Value: Pais,
+            Type: "VarChar"
         },
-        idCliente:{
-            Value:idClient,
-            Type:"VarChar"
+        idCliente: {
+            Value: idClient,
+            Type: "VarChar"
         },
-        idInstitucion:{
-            Value:idInstitucion,
-            Type:"VarChar"
+        idInstitucion: {
+            Value: idInstitucion,
+            Type: "VarChar"
         },
-        idTipoEquipo:{
-            Value:idEquipo,
-            Type:"VarChar"
+        idTipoEquipo: {
+            Value: idEquipo,
+            Type: "VarChar"
         },
-        idSite:{
-            Value:idSite,
-            Type:"VarChar"
+        idSite: {
+            Value: idSite,
+            Type: "VarChar"
         },
-        serie:{
-            Value:serie,
-            Type:"VarChar"
+        serie: {
+            Value: serie,
+            Type: "VarChar"
         }
     }
-    return new this.DB().procedure('sp_Busco_Equipos',parametros)
+    return new this.DB().procedure('sp_Busco_Equipos', parametros)
 };
 
-EquipoRepository.prototype.getByIdEquipo = function(id){
+EquipoRepository.prototype.getByIdEquipo = function(id) {
     let parametros = {
-        idEquipo : {
-            Value:id,
-            Type:"Int"
+        idEquipo: {
+            Value: id,
+            Type: "Int"
         }
     }
-    return new Promise((resolve,reject)=>{
-        new this.DB().procedure('sp_Buscar_Equipo_byId',parametros)
+    return new Promise((resolve, reject) => {
+        new this.DB().procedure('sp_Buscar_Equipo_byId', parametros)
             .then(result => {
                 let equipo = {
-                    planta:null,
-                    serie:null,
-                    modelo:null,
-                    carga:null,
-                    snmp:null,
-                    so:null,
-                    xfs:null,
-                    f_garantia:null,
-                    f_instalacion:null,
-                    f_retiro:null,
-                    f_entrega:null,
-                    institucion:null,
-                    cliente:null,
-                    estado:null,
-                    tipoEquipo:null,
-                    tipoEq:null,
-                    marca:null,
-                    modulos:[]
+                    planta: null,
+                    serie: null,
+                    modelo: null,
+                    carga: null,
+                    snmp: null,
+                    so: null,
+                    xfs: null,
+                    f_garantia: null,
+                    f_instalacion: null,
+                    f_retiro: null,
+                    f_entrega: null,
+                    institucion: null,
+                    cliente: null,
+                    estado: null,
+                    tipoEquipo: null,
+                    tipoEq: null,
+                    marca: null,
+                    position: null,
+                    site: null,
+                    modulos: []
                 };
-                result.forEach((item,index) => {
-                    if(index == 0){
+                result.forEach((item, index) => {
+                    if (index == 0) {
                         equipo.planta = item.id_planta;
                         equipo.serie = item.nro_serie;
                         equipo.modelo = item.id_modelo;
@@ -87,10 +95,10 @@ EquipoRepository.prototype.getByIdEquipo = function(id){
                         equipo.snmp = item.id_snmp;
                         equipo.so = item.id_SO;
                         equipo.xfs = item.id_xfs;
-                        equipo.f_garantia = item.f_fin_garantia;
-                        equipo.f_instalacion = item.f_inst;
-                        equipo.f_retiro = item.f_retiro;
-                        equipo.f_entrega = item.f_entrega;
+                        equipo.f_garantia = item.f_fin_garantia ? moment.utc(item.f_fin_garantia).format("YYYY-MM-DD") : null;
+                        equipo.f_instalacion = item.f_inst ? moment.utc(item.f_inst).format("YYYY-MM-DD") : null;
+                        equipo.f_retiro = item.f_retiro ? moment.utc(item.f_retiro).format("YYYY-MM-DD") : null;
+                        equipo.f_entrega = item.f_entrega ? moment.utc(item.f_entrega).format("YYYY-MM-DD") : null;
                         equipo.institucion = item.id_institucion;
                         equipo.cliente = item.Id_cliente;
                         equipo.estado = item.id_estado;
@@ -98,21 +106,29 @@ EquipoRepository.prototype.getByIdEquipo = function(id){
                         equipo.tipoEquipo = item.id_tipo_equipo;
                         equipo.marca = item.id_marca;
                         equipo.modulos = item.id_modulo ? [item.id_modulo] : [];
-                    }else{
-                        if(item.id_modulo){
+                        equipo.position = {
+                            value: item.idPosicion,
+                            label: item.textPosicion
+                        }
+                        equipo.site = {
+                            value: item.idSite,
+                            label: item.textSite
+                        }
+                    } else {
+                        if (item.id_modulo) {
                             equipo.modulos.push(item.id_modulo);
                         }
                     }
                 });
                 resolve(result.length ? equipo : null)
             })
-            .catch(err=>{
+            .catch(err => {
                 reject(err)
             })
     })
 }
 
-EquipoRepository.prototype.getEquipoByIdSiteClient = function (idSiteClient) {
+EquipoRepository.prototype.getEquipoByIdSiteClient = function(idSiteClient) {
     return new this.DB().executeQuery(`SELECT DISTINCT e.id as value, e.id_equipo_ncr as label
                                         FROM inv_equipo e
                                         inner join inv_posicion p on e.id_posicion = p.id
@@ -120,192 +136,191 @@ EquipoRepository.prototype.getEquipoByIdSiteClient = function (idSiteClient) {
                                         WHERE e.activo = 1`)
 };
 
-EquipoRepository.prototype.getlistMarca = function () {
-    return new Promise((resolve,reject)=>{
+EquipoRepository.prototype.getlistMarca = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select  id as value, marca as label from marca`)
-            .then((result)=>{
-                resolve({marcas:result})
+            .then((result) => {
+                resolve({ marcas: result })
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err)
             })
     });
 };
 
-EquipoRepository.prototype.getEquipos = function () {
-    return new Promise((resolve,reject)=>{
+EquipoRepository.prototype.getEquipos = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select id as value, tipo_equipo as label from tipo_equipo where id <> 2`)
-            .then((result)=>{
-                resolve({Equipos:result})
+            .then((result) => {
+                resolve({ Equipos: result })
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err)
             })
     });
 };
 
-EquipoRepository.prototype.getTipoEquipo = function () {
-    return new Promise((resolve,reject)=>{
+EquipoRepository.prototype.getTipoEquipo = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select id as value, tipo_equipo as label,id_tipo_equipo as idEquipo from tipo_eq`)
-            .then((result)=>{
+            .then((result) => {
                 let resultAgrupado = {};
-                for(let i = 0; i < result.length ; i++){
+                for (let i = 0; i < result.length; i++) {
                     let obj = result[i];
-                    if(resultAgrupado.hasOwnProperty(obj.idEquipo)){
+                    if (resultAgrupado.hasOwnProperty(obj.idEquipo)) {
                         resultAgrupado[obj.idEquipo].push(obj);
-                    }else{
+                    } else {
                         let attr = obj.idEquipo ? obj.idEquipo : "generico";
                         resultAgrupado[attr] = [obj];
                     }
                 }
-                resolve({tipoEquipo:resultAgrupado})
+                resolve({ tipoEquipo: resultAgrupado })
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err)
             })
     });
 };
 
-
-EquipoRepository.prototype.getPlanta = function () {
-    return new Promise((resolve,reject)=>{
+EquipoRepository.prototype.getPlanta = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().queryStream(`select id as value, CONCAT(planta,' - ',prefijo) as label,prefijo,id_marca as idMarca from planta;`)
-            .then((result)=>{
+            .then((result) => {
                 let resultAgrupado = {};
-                for(let i = 0; i < result.length ; i++){
+                for (let i = 0; i < result.length; i++) {
                     let obj = result[i];
-                    if(resultAgrupado.hasOwnProperty(obj.idMarca)){
+                    if (resultAgrupado.hasOwnProperty(obj.idMarca)) {
                         resultAgrupado[obj.idMarca].push(obj);
-                    }else{
+                    } else {
                         let attr = obj.idMarca ? obj.idMarca : "generico";
                         resultAgrupado[attr] = [obj];
                     }
                 }
-                resolve({planta:resultAgrupado});
+                resolve({ planta: resultAgrupado });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err)
             })
     })
 };
 
-EquipoRepository.prototype.getListModelo = function () {
-    return new Promise((resolve,reject) => {
+EquipoRepository.prototype.getListModelo = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().queryStream(`select id as value, modelo as label, id_marca as idMarca from modelo`)
-            .then((result)=>{
+            .then((result) => {
                 //agrupar por marca
                 let resultAgrupado = {};
-                for(let i = 0; i < result.length ; i++){
+                for (let i = 0; i < result.length; i++) {
                     let obj = result[i];
-                    if(resultAgrupado.hasOwnProperty(obj.idMarca)){
+                    if (resultAgrupado.hasOwnProperty(obj.idMarca)) {
                         resultAgrupado[obj.idMarca].push(obj);
-                    }else{
+                    } else {
                         resultAgrupado[obj.idMarca] = [obj];
                     }
                 }
-                resolve({modelo:resultAgrupado});
+                resolve({ modelo: resultAgrupado });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     });
 };
 
-EquipoRepository.prototype.getGarantia = function () {
-    return new Promise((resolve,reject) => {
+EquipoRepository.prototype.getGarantia = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select id as value, garantia as label from garantia`)
-            .then((result)=>{
-                resolve({garantia:result});
+            .then((result) => {
+                resolve({ garantia: result });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     })
 };
 
-EquipoRepository.prototype.getCarga = function () {
-    return new Promise((resolve,reject)=>{
+EquipoRepository.prototype.getCarga = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().queryStream(`select id as value,carga as label from carga`)
-            .then((result)=>{
-                resolve({carga:result});
+            .then((result) => {
+                resolve({ carga: result });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     })
 };
 
-EquipoRepository.prototype.getSnmp = function () {
-    return new Promise((resolve,reject)=>{
+EquipoRepository.prototype.getSnmp = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select id as value,version as label from snmp`)
-            .then((result)=>{
-                resolve({snmp:result});
+            .then((result) => {
+                resolve({ snmp: result });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     })
 
 };
 
-EquipoRepository.prototype.getSO = function () {
-    return new Promise((resolve,reject) => {
+EquipoRepository.prototype.getSO = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select id as value,sistema_operativo as label from sistema_operativo`)
-            .then((result)=>{
-                resolve({so:result});
+            .then((result) => {
+                resolve({ so: result });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     })
 };
 
-EquipoRepository.prototype.getEstado = function () {
-    return new Promise((resolve,reject) =>{
+EquipoRepository.prototype.getEstado = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select id as value,estado as label from estado`)
-            .then((result)=>{
-                resolve({estado:result});
+            .then((result) => {
+                resolve({ estado: result });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     })
 };
 
-EquipoRepository.prototype.getXFS = function () {
-    return new Promise((resolve,reject) =>{
+EquipoRepository.prototype.getXFS = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`select id as value, xfs as label from xfs`)
-            .then((result)=>{
-                resolve({xfs:result});
+            .then((result) => {
+                resolve({ xfs: result });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     })
 };
 
-EquipoRepository.prototype.getModulosEquipo = function () {
-    return new Promise((resolve,reject) =>{
+EquipoRepository.prototype.getModulosEquipo = function() {
+    return new Promise((resolve, reject) => {
         new this.DB().executeQuery(`SELECT _m.id as value, modulo as label, tipo_equipo as idTipo, 0 as selected, 1 as show,_p.id_ventana_horaria as idVentana from modulos _m LEFT JOIN prestacion _p on _p.id = _m.id_prestacion`)
-            .then((result)=>{
+            .then((result) => {
                 let resultAgrupado = {};
-                for(let i = 0; i < result.length ; i++){
+                for (let i = 0; i < result.length; i++) {
                     let obj = result[i];
-                    if(resultAgrupado.hasOwnProperty(obj.idTipo)){
+                    if (resultAgrupado.hasOwnProperty(obj.idTipo)) {
                         resultAgrupado[obj.idTipo].push(obj);
-                    }else{
+                    } else {
                         resultAgrupado[obj.idTipo] = [obj];
                     }
                 }
-                resolve({modulos:resultAgrupado});
+                resolve({ modulos: resultAgrupado });
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(err);
             })
     })
 };
 
-EquipoRepository.prototype.getPrestacionByIdEquipo = function (idEquipo) {
+EquipoRepository.prototype.getPrestacionByIdEquipo = function(idEquipo) {
     return new this.DB().executeQuery(`SELECT _p.id_ventana_horaria as idVentanaHoraria FROM modulos_equipo _me
                                     INNER JOIN modulos _m on _m.id = _me.id_modulo
                                     INNER JOIN prestacion _p on _p.id = _m.id_prestacion
