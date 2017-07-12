@@ -3,7 +3,7 @@
  */
 let lib = require('../lib');
 lib();
-let repo = require("../Repository/Login");
+let repo = require("../Repository/Equipo");
 let service = require("../Services/loginService");
 let jwt = require('jsonwebtoken');
 
@@ -12,7 +12,7 @@ let jwt = require('jsonwebtoken');
                 let pass = data.pass; */
 
 function Test() {
-    service.Vefericar({ user: 'admin', pass: '1234' })
+    repo.Delete_noLogico(1858)
         .then((result) => {
             console.log(result)
         })

@@ -19,11 +19,11 @@ class sqlServer {
     }
 }
 
-sqlServer.prototype.close = function () {
+sqlServer.prototype.close = function() {
     this.connection.close();
 };
 
-sqlServer.prototype.executeQuery = function (query) {
+sqlServer.prototype.executeQuery = function(query) {
     return new Promise((resolve, reject) => {
         //conectando a la base datos
         this.connection.connect()
@@ -45,7 +45,7 @@ sqlServer.prototype.executeQuery = function (query) {
     });
 };
 
-sqlServer.prototype.queryStream = function (query) {
+sqlServer.prototype.queryStream = function(query) {
     return new Promise((resolve, reject) => {
         this.connection.connect()
             .then(() => {
@@ -79,19 +79,21 @@ function buildParametro(cmd, hashParametro) {
     }
 }
 
-sqlServer.prototype.procedure = function (nameProcedure, inputParamentro) {
-    return new Promise((resolve,reject)=>{
+sqlServer.prototype.procedure = function(nameProcedure, inputParamentro) {
+    return new Promise((resolve, reject) => {
         this.connection.connect()
-            .then(()=>{
-                buildParametro(this.Request,inputParamentro);
-                this.Request.execute(nameProcedure,(err, recordsets, returnValue)=>{
-                    if(err){
+            .then(() => {
+                buildParametro(this.Request, inputParamentro);
+                this.Request.execute(nameProcedure, (err, recordsets, returnValue) => {
+                    if (err) {
+                        this.close();
                         reject(err);
                     }
+                    this.close();
                     resolve(recordsets[0]);
                 })
             })
-            .catch(err=>{
+            .catch(err => {
                 reject(err)
             })
     })

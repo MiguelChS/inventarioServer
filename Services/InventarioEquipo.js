@@ -5,7 +5,9 @@
 let jwt = require('jsonwebtoken');
 let repoEquipo = require("../Repository/Equipo");
 let repoPosition = require("../Repository/Position");
+let repoIncidente = require("../Repository/Incidente");
 let repoSite = require("../Repository/Site");
+let moment = require("moment");
 
 
 function Equipo() {
@@ -79,73 +81,36 @@ function Equipo() {
         },
         'UpdateEquipo_Test': (form, token) => {
             let idUser = jwt.decode(token).idUser;
-            if (form.newPosicion) {
-                return new Promise((resolve, reject) => {
-                    let formPosicion = form.newPosicion;
-                    //le insertamos las prestaciones y el idUsuario
-                    formPosicion.HoraPrestacion = form.horaPrestacion;
-                    formPosicion.iduser = idUser;
-                    //1 insertamos primero la posicion
-                    repoPosition.insertPosition(formPosicion)
-                        .then((result) => {
-                            //2 obtenemos el id de la nueva posicion
-                            form.id_user = idUser; //idUser;
-                            form.id_posicion = result.data;
-                            //insertamos el nuevo equipo con la posicion
-                            repoEquipo.UpdateEquipo(form)
-                                .then(() => { resolve() })
-                                .catch((err) => {
-                                    repoPosition.deletePosicion(result.data, idUser)
-                                        .catch(err => console.log(err));
-                                    reject(err);
-                                })
-                        })
-                        .catch((err) => {
-                            reject(err);
-                        });
-                });
-            } else {
-                //eliminamos la New Posicion y enviamos
-                form.id_user = idUser;
-                delete form.newPosicion;
-                return repoEquipo.UpdateEquipo(form);
-            }
+            form.id_user = idUser;
+            return repoEquipo.UpdateEquipo(form);
         },
         'newEquipo': (form, token) => {
             let idUser = jwt.decode(token).idUser;
-            if (form.newPosicion) {
-                return new Promise((resolve, reject) => {
-                    let formPosicion = form.newPosicion;
-                    //le insertamos las prestaciones y el idUsuario
-                    formPosicion.HoraPrestacion = form.horaPrestacion;
-                    formPosicion.iduser = idUser;
-                    //1 insertamos primero la posicion
-                    repoPosition.insertPosition(formPosicion)
-                        .then((result) => {
-                            //2 obtenemos el id de la nueva posicion
-                            form.id_user = idUser;
-                            form.id_posicion = result.data;
-                            //insertamos el nuevo equipo con la posicion
-                            repoEquipo.insertEquipo(form)
-                                .then(() => { resolve() })
-                                .catch((err) => {
-                                    //en caso de fallar elminar la posicion creada
-                                    repoPosition.deletePosicion(idUser, form.id_posicion)
-                                        .then(result => { console.log(result) })
-                                        .catch(err => { console.log(err) })
-                                    reject(err);
-                                })
-                        })
-                        .catch((err) => {
-                            reject(err);
-                        });
-                });
-            } else {
-                //eliminamos la New Posicion y enviamos
-                form.id_user = idUser;
-                delete form.newPosicion;
-                return repoEquipo.insertEquipo(form);
-            }
+            form.id_user = idUser;
+            return new Promise((resolve, reject) => {
+                repoEquipo.insertEquipo(form)
+                    .then(result => {
+                        repoIncidente.createIniciente({
+                                "id_usuario": idUser,
+                                "id_estado": 1,
+                                "fecha_creacion": moment().format("YYYY-MM-DD HH:mm"),
+                                "fecha_modificacion": null,
+                                "fecha_cierre": null,
+                                "data": {
+                                    "id_equipo": result.data,
+                                    "tipo_accion": 1
+                                },
+                                "dataApp": 1,
+                                "comentario": []
+                            })
+                            .then(re => resolve())
+                            .catch(err => {
+                                repoEquipo.Delete_noLogico(result.data);
+                                reject({ message: "error al crear Inicidente" })
+                            })
+                    })
+                    .catch(err => reject(err))
+            })
         },
         'getEquipos': (parametros) => {
             let idEquipo = parametros.idTipoEq == "null" ? null : parametros.idTipoEq;

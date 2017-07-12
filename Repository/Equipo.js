@@ -24,6 +24,16 @@ EquipoRepository.prototype.Delete = function(id, idUser) {
     return axios.delete(`http://lnxsrv02:3000/${idUser}/${id}`)
 };
 
+EquipoRepository.prototype.Delete_noLogico = function(id) {
+    let parametros = {
+        id: {
+            Value: id,
+            Type: "Int"
+        }
+    }
+    return new this.DB().procedure('sp_Delete_inv_equipo_no_logico', parametros)
+}
+
 EquipoRepository.prototype.getbyFiltros = function(idEquipo, idClient, idInstitucion, idSite, Pais, serie) {
     let parametros = {
         Pais: {

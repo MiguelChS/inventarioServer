@@ -6,11 +6,17 @@ let Posicion = require("../Services/InventarioPosicion");
 let login = require("../Services/loginService");
 let Site = require("../Services/inventarioSite");
 let routerLogin = require('./RouterLogin');
+let routerEquipo = require("./RouterEquipo");
+let routerInicidente = require("./RouterInicidente");
 let fs = require("fs");
 
 function Api(Router) {
 
     routerLogin(Router);
+
+    routerEquipo(Router);
+
+    routerInicidente(Router);
 
     Router.get("/sourceInventario", (req, res) => {
         Equipo().getSource()
@@ -107,17 +113,6 @@ function Api(Router) {
             })
             .catch((err) => {
                 err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.post("/Equipo", (req, res) => {
-        Equipo().newEquipo(req.body, req.headers.authorization)
-            .then((result) => {
-                res.status(200).json({});
-            })
-            .catch((err) => {
-                err = err.response ? err.response.data : err.message;
                 res.status(400).json({ err: err });
             });
     });
