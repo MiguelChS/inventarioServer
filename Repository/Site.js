@@ -13,6 +13,30 @@ SiteRepository.prototype.insertSiteClient = function(formulario) {
     return axios.post('http://lnxsrv02:3003/', formulario);
 };
 
+SiteRepository.prototype.updateSite = function(formulario) {
+    return axios.patch('http://lnxsrv02:3003/', formulario);
+}
+
+SiteRepository.prototype.getSiteByFilter = function(param) {
+    let parametros = {
+        idUsuario: {
+            Value: param.idUser,
+            Type: "Int"
+        }
+    }
+    return new this.DB().procedure('sp_Buscar_Site', parametros)
+}
+
+SiteRepository.prototype.getSitebyID = function(idSite) {
+    let parametros = {
+        idSite: {
+            Value: idSite,
+            Type: "Int"
+        }
+    }
+    return new this.DB().procedure('sp_Buscar_Site_byID', parametros)
+}
+
 SiteRepository.prototype.getSiteByInstitucion = function(idInstitucion) {
     return new this.DB().executeQuery(`SELECT DISTINCT _is.nombre_site_id as label ,_is.id as value from inv_equipo _ie
                             INNER JOIN inv_posicion _p on _p.id = _ie.id_posicion and _p.activo = 1
@@ -23,10 +47,6 @@ SiteRepository.prototype.getSiteByInstitucion = function(idInstitucion) {
 
 SiteRepository.prototype.getSiteByidClientD1 = function(idClient) {
     return new this.DB().executeQuery(`SELECT  ID_Site as value, Nombre_Site as label from SITE WHERE Id_cliente = ${idClient}`)
-};
-
-SiteRepository.prototype.getSiteClienteIdSite = function(idSite) {
-    return new this.DB().executeQuery(`select id as value, nombre_site as label, id_inv_site as idSite FROM inv_site_cliente where id_inv_site=${idSite} and f_baja is NULL`);
 };
 
 SiteRepository.prototype.getSiteByLugar = function(idLugar) {

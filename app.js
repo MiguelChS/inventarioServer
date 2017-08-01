@@ -2,6 +2,7 @@
  * Created by mc185249 on 2/16/2017.
  */
 let express = require("express");
+const favicon = require('express-favicon');
 let app = express();
 let bodyParser = require("body-parser");
 let api = require("./API/index");
@@ -12,6 +13,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyParser.text());
 app.use(express.static('public'));
+app.use(favicon(__dirname + '/public/image/favicon.png'));
 //call libreria
 lib();
 //middleware

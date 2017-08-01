@@ -3,8 +3,8 @@
  */
 let lib = require('../lib');
 lib();
-let repo = require("../Repository/Equipo");
-let service = require("../Services/loginService");
+let repo = require("../Repository/Position");
+let service = require("../Services/InventarioPosicion");
 let jwt = require('jsonwebtoken');
 
 
@@ -12,9 +12,10 @@ let jwt = require('jsonwebtoken');
                 let pass = data.pass; */
 
 function Test() {
-    repo.Delete_noLogico(1858)
+    service().getPosicionbyId(1877)
         .then((result) => {
             console.log(result)
+            x = 12
         })
         .catch((err) => {
             console.log(err);

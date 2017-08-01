@@ -10,6 +10,26 @@ class EquipoRepository {
     }
 }
 
+EquipoRepository.prototype.CargaAprobada = function(id) {
+    let parametros = {
+        idEquipo: {
+            Value: id,
+            Type: "Int"
+        }
+    }
+    return new this.DB().procedure('sp_Aprobacion_Carga_Equipo', parametros)
+}
+
+EquipoRepository.prototype.cargaCancelada = function(id) {
+    let parametros = {
+        idEquipo: {
+            Value: id,
+            Type: "Int"
+        }
+    };
+    return new this.DB().procedure('sp_Carga_Cancelada_Equipo', parametros);
+}
+
 EquipoRepository.prototype.insertEquipo = function(formulario) {
     //lnxsrv02
     //153.72.43.133
@@ -34,7 +54,7 @@ EquipoRepository.prototype.Delete_noLogico = function(id) {
     return new this.DB().procedure('sp_Delete_inv_equipo_no_logico', parametros)
 }
 
-EquipoRepository.prototype.getbyFiltros = function(idEquipo, idClient, idInstitucion, idSite, Pais, serie) {
+EquipoRepository.prototype.getbyFiltros = function(idEquipo, idClient, idInstitucion, idSite, Pais, serie, idUser) {
     let parametros = {
         Pais: {
             Value: Pais,
@@ -58,6 +78,10 @@ EquipoRepository.prototype.getbyFiltros = function(idEquipo, idClient, idInstitu
         },
         serie: {
             Value: serie,
+            Type: "VarChar"
+        },
+        idUsuario: {
+            Value: idUser,
             Type: "VarChar"
         }
     }
@@ -137,14 +161,6 @@ EquipoRepository.prototype.getByIdEquipo = function(id) {
             })
     })
 }
-
-EquipoRepository.prototype.getEquipoByIdSiteClient = function(idSiteClient) {
-    return new this.DB().executeQuery(`SELECT DISTINCT e.id as value, e.id_equipo_ncr as label
-                                        FROM inv_equipo e
-                                        inner join inv_posicion p on e.id_posicion = p.id
-                                        inner join inv_site_cliente c on p.id_site_cliente = c.id AND c.id = ${idSiteClient}
-                                        WHERE e.activo = 1`)
-};
 
 EquipoRepository.prototype.getlistMarca = function() {
     return new Promise((resolve, reject) => {
@@ -311,7 +327,7 @@ EquipoRepository.prototype.getXFS = function() {
 
 EquipoRepository.prototype.getModulosEquipo = function() {
     return new Promise((resolve, reject) => {
-        new this.DB().executeQuery(`SELECT _m.id as value, modulo as label, tipo_equipo as idTipo, 0 as selected, 1 as show,_p.id_ventana_horaria as idVentana from modulos _m LEFT JOIN prestacion _p on _p.id = _m.id_prestacion`)
+        new this.DB().executeQuery(`SELECT _m.id as value, modulo as label, tipo_equipo as idTipo,_p.id_ventana_horaria as idVentana from modulos _m LEFT JOIN prestacion _p on _p.id = _m.id_prestacion`)
             .then((result) => {
                 let resultAgrupado = {};
                 for (let i = 0; i < result.length; i++) {
@@ -328,14 +344,6 @@ EquipoRepository.prototype.getModulosEquipo = function() {
                 reject(err);
             })
     })
-};
-
-EquipoRepository.prototype.getPrestacionByIdEquipo = function(idEquipo) {
-    return new this.DB().executeQuery(`SELECT _p.id_ventana_horaria as idVentanaHoraria FROM modulos_equipo _me
-                                    INNER JOIN modulos _m on _m.id = _me.id_modulo
-                                    INNER JOIN prestacion _p on _p.id = _m.id_prestacion
-                                    WHERE _me.id_equipo = ${idEquipo}  AND _me.f_fin is NULL
-                                    `)
 };
 
 

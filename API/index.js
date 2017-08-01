@@ -8,7 +8,8 @@ let Site = require("../Services/inventarioSite");
 let routerLogin = require('./RouterLogin');
 let routerEquipo = require("./RouterEquipo");
 let routerInicidente = require("./RouterInicidente");
-let fs = require("fs");
+let routerSite = require("./RouterSite");
+let routerSource = require("./RouterSource")
 
 function Api(Router) {
 
@@ -18,104 +19,9 @@ function Api(Router) {
 
     routerInicidente(Router);
 
-    Router.get("/sourceInventario", (req, res) => {
-        Equipo().getSource()
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
+    routerSite(Router);
 
-    Router.get('/site/:idClient', (req, res) => {
-        Equipo().getSiteByidClient(req.params.idClient)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get('/siteClient/:idSite', (req, res) => {
-        Equipo().getSiteClientByIdSite(req.params.idSite)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get('/posicion/:idSite', (req, res) => {
-        Equipo().getPosicionByIdSite(req.params.idSite)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get('/equipo/:idSiteClient', (req, res) => {
-        Equipo().getEquipoByIdSiteClient(req.params.idSiteClient)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get("/prestacionEquipo/:idEquipo", (req, res) => {
-        Equipo().getPrestacionEquipo(req.params.idEquipo)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get("/geoEstado/:pais", (req, res) => {
-        Equipo().getEstado(req.params.pais)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get("/geoCiudad/:pais/:estado", (req, res) => {
-        Equipo().getCiudad(req.params.pais, req.params.estado)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get("/geoCodigoPostal/:pais/:estado/:ciudad", (req, res) => {
-        Equipo().getCodigoPostal(req.params.pais, req.params.estado, req.params.ciudad)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.hasOwnProperty("message") ? err.message : err;
-                res.status(400).json({ err: err });
-            });
-    });
+    routerSource(Router);
 
     Router.delete("/EquipoDelete/:idEquipo", (req, res) => {
         Equipo().DeleteEquipo(req.params.idEquipo, req.headers.authorization)
@@ -139,8 +45,8 @@ function Api(Router) {
             });
     });
 
-    Router.post("/Site", (req, res) => {
-        Site().newSite(req.body, req.headers.authorization)
+    Router.put("/Posicion", (req, res) => {
+        Posicion().updatePosicion(req.body, req.headers.authorization)
             .then((result) => {
                 res.status(200).json({});
             })
@@ -150,8 +56,19 @@ function Api(Router) {
             });
     });
 
-    Router.get("/getSitePublic/:idTipoLugar", (req, res) => {
-        Site().getSitePublicByTipoLugar(req.params.idTipoLugar)
+    Router.put("/Posicion/Incidente/:idTicket", (req, res) => {
+        Posicion().updatePosicionSinIncidente(req.body, req.headers.authorization, req.params.idTicket)
+            .then((result) => {
+                res.status(200).json({});
+            })
+            .catch((err) => {
+                err = err.response ? err.response.data : err.message;
+                res.status(400).json({ err: err });
+            });
+    });
+
+    Router.get("/posicion/:cliente/:site/:nombrePosicion/:tipoSite", (req, res) => {
+        Posicion().getPosicionByFiltro(req.params, req.headers.authorization)
             .then((result) => {
                 res.status(200).json(result);
             })
@@ -159,34 +76,23 @@ function Api(Router) {
                 err = err.hasOwnProperty("message") ? err.message : err;
                 res.status(400).json({ err: err });
             });
-    });
+    })
+
+    Router.get("/posicion/edit/:idPosicion", (req, res) => {
+        Posicion().getPosicionbyId(req.params.idPosicion)
+            .then((result) => {
+                res.status(200).json(result);
+            })
+            .catch((err) => {
+                err = err.hasOwnProperty("message") ? err.message : err;
+                res.status(400).json({ err: err });
+            });
+    })
 
     Router.get("/Equipo/:idTipoEq/:idClient/:idInstitucion/:idSite/:Pais/:serie", (req, res) => {
-        Equipo().getEquipos(req.params)
+        Equipo().getEquipos(req.params, req.headers.authorization)
             .then((result) => {
                 res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.response ? err.response.data : err.message;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.get("/EquipoById/:idEquipo", (req, res) => {
-        Equipo().getEquipoById(req.params.idEquipo)
-            .then((result) => {
-                res.status(200).json(result);
-            })
-            .catch((err) => {
-                err = err.response ? err.response.data : err.message;
-                res.status(400).json({ err: err });
-            });
-    });
-
-    Router.put("/Equipo", (req, res) => {
-        Equipo().UpdateEquipo_Test(req.body, req.headers.authorization)
-            .then((result) => {
-                res.status(200).json({});
             })
             .catch((err) => {
                 err = err.response ? err.response.data : err.message;

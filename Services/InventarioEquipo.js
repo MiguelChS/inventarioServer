@@ -42,6 +42,7 @@ function Equipo() {
                 queries.push(repoSite.getPais());
                 queries.push(repoSite.getGeoNcr());
                 queries.push(repoSite.getTipoDirecion());
+                queries.push(repoIncidente.getAccionesIncidente());
                 Promise.all(queries).then((value) => {
                     var result = {};
                     value.map((a) => {
@@ -58,17 +59,8 @@ function Equipo() {
         'getSiteByidClient': (idClient) => {
             return repoSite.getSiteByidClientD1(idClient);
         },
-        'getSiteClientByIdSite': (idSite) => {
-            return repoSite.getSiteClienteIdSite(idSite)
-        },
         'getPosicionByIdSite': (idSite) => {
             return repoPosition.getPosicionByIdSite(idSite);
-        },
-        'getEquipoByIdSiteClient': (idSiteClient) => {
-            return repoEquipo.getEquipoByIdSiteClient(idSiteClient);
-        },
-        'getPrestacionEquipo': (idEquipo) => {
-            return repoEquipo.getPrestacionByIdEquipo(idEquipo);
         },
         'getEstado': (pais) => {
             return repoSite.getEstado(pais);
@@ -80,25 +72,54 @@ function Equipo() {
             return repoSite.getCodigoPostal(pais, estado, ciudad);
         },
         'UpdateEquipo_Test': (form, token) => {
-            let idUser = jwt.decode(token).idUser;
-            form.id_user = idUser;
-            return repoEquipo.UpdateEquipo(form);
+            let usuario = jwt.decode(token);
+            form.id_user = usuario.idUser;
+            return new Promise((resolve, reject) => {
+                repoEquipo.UpdateEquipo(form)
+                    .then(result => {
+                        repoIncidente.createIncidente({
+                                "autor": {
+                                    id: usuario.idUser,
+                                    nombre: usuario.nombreCompleto
+                                },
+                                "id_estado": 1,
+                                "fecha_creacion": moment().format("YYYY-MM-DD HH:mm"),
+                                "fecha_modificacion": null,
+                                "fecha_cierre": null,
+                                "data": {
+                                    "id_equipo": form.idEquipo,
+                                    "tipo_action": 3
+                                },
+                                "dataApp": 1,
+                                "comentario": []
+                            })
+                            .then(re => resolve())
+                            .catch(err => {
+                                repoEquipo.cargaCancelada(form.idEquipo)
+                                reject({ message: "error al crear Inicidente" })
+                            })
+                    })
+                    .catch(err => reject(err))
+            })
         },
         'newEquipo': (form, token) => {
-            let idUser = jwt.decode(token).idUser;
-            form.id_user = idUser;
+            let usuario = jwt.decode(token);
+            form.id_user = usuario.idUser;
             return new Promise((resolve, reject) => {
                 repoEquipo.insertEquipo(form)
                     .then(result => {
-                        repoIncidente.createIniciente({
-                                "id_usuario": idUser,
+                        repoIncidente.createIncidente({
+                                "autor": {
+                                    id: usuario.idUser,
+                                    nombre: usuario.nombreCompleto
+                                },
                                 "id_estado": 1,
                                 "fecha_creacion": moment().format("YYYY-MM-DD HH:mm"),
                                 "fecha_modificacion": null,
                                 "fecha_cierre": null,
                                 "data": {
                                     "id_equipo": result.data,
-                                    "tipo_accion": 1
+                                    "tipo_action": 1
                                 },
                                 "dataApp": 1,
                                 "comentario": []
@@ -112,14 +133,15 @@ function Equipo() {
                     .catch(err => reject(err))
             })
         },
-        'getEquipos': (parametros) => {
+        'getEquipos': (parametros, token) => {
+            let idUser = jwt.decode(token).idUser;
             let idEquipo = parametros.idTipoEq == "null" ? null : parametros.idTipoEq;
             let idClient = parametros.idClient == "null" ? null : parametros.idClient;
             let idSite = parametros.idSite == "null" ? null : parametros.idSite;
             let idInstitucion = parametros.idInstitucion == "null" ? null : parametros.idInstitucion;
             let Pais = parametros.Pais == "null" ? null : parametros.Pais;
             let serie = parametros.serie == "null" ? null : parametros.serie;
-            return repoEquipo.getbyFiltros(idEquipo, idClient, idInstitucion, idSite, Pais, serie)
+            return repoEquipo.getbyFiltros(idEquipo, idClient, idInstitucion, idSite, Pais, serie, idUser)
         },
         'getEquipoById': (idEquipo) => {
             return new Promise((resolve, reject) => {

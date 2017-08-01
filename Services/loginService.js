@@ -25,7 +25,7 @@ function Login() {
                                             })
                                         }
                                         //agregamos el token
-                                    usuarioFinal.token = jwt.sign(Object.assign({}, usuarioFinal, { idUser: resultUser.id, exp: Math.floor(Date.now() / 1000) + (60 * 60) }), 'secretKey')
+                                    usuarioFinal.token = jwt.sign(Object.assign({}, usuarioFinal, { idUser: resultUser.id, exp: Math.floor(Date.now() / 1000) + (2000 * 2000) }), 'secretKey')
                                     resolve(usuarioFinal)
                                 })
                                 .catch(err => reject(err));

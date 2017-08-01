@@ -33,6 +33,17 @@ function posicionController(Router) {
                 res.status(400).json({ err: err });
             });
     });
+
+    Router.get("/posicion/:cliente/:site/:nombrePosicion/:tipoSite", (req, res) => {
+        Posicion().getPosicionByFiltro(req.params, req.headers.authorization)
+            .then((result) => {
+                res.status(200).json(result);
+            })
+            .catch((err) => {
+                err = err.hasOwnProperty("message") ? err.message : err;
+                res.status(400).json({ err: err });
+            });
+    })
 }
 
 module.exports = posicionController;
