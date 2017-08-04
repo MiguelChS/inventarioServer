@@ -32,6 +32,17 @@ PositionRepository.prototype.AprobarCarga = function(idPosicion) {
     return new this.DB().procedure('sp_Aprobacion_Carga_Posicion', parametros)
 }
 
+PositionRepository.prototype.CancelarCarga = function(idPosicion) {
+    //sp_Aprobacion_Carga_Posicion
+    let parametros = {
+        idPosicion: {
+            Value: id,
+            Type: "Int"
+        }
+    }
+    return new this.DB().procedure('sp_Carga_Cancelada_Posicion', parametros)
+}
+
 PositionRepository.prototype.BuscarPosicionbyFiltro = function(Filtro) {
     //sp_Buscar_Posicion
     let parametros = {

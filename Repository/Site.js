@@ -17,6 +17,26 @@ SiteRepository.prototype.updateSite = function(formulario) {
     return axios.patch('http://lnxsrv02:3003/', formulario);
 }
 
+SiteRepository.prototype.AprobarCarga = function(idSite) {
+    let parametros = {
+        idSite: {
+            Value: idSite,
+            Type: "Int"
+        }
+    }
+    return new this.DB().procedure('sp_Aprobacion_Carga_Site', parametros)
+}
+
+SiteRepository.prototype.CancelarCarga = function(idSite) {
+    let parametros = {
+        idSite: {
+            Value: idSite,
+            Type: "Int"
+        }
+    }
+    return new this.DB().procedure('sp_Carga_Cancelada_Site', parametros)
+}
+
 SiteRepository.prototype.getSiteByFilter = function(param) {
     let parametros = {
         idUsuario: {

@@ -99,7 +99,6 @@ function Posicion() {
                     .catch(err => {
                         reject(err)
                     })
-
             })
         },
         /* */
